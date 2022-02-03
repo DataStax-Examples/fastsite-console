@@ -1,17 +1,10 @@
-image: gitpod/workspace-full
 tasks:
-  - init: yarn install; pip3 install httpie-astra
-    command: echo "Please Define .env file if not exist"
+  - name: setup
+    before: |
+      npm install
+    command: |
+      gp open README.md
 ports:
-  - port: 3000
+  - port: 8888
     onOpen: open-browser
-github:
-  prebuilds:
-    master: true
-    branches: false
-    pullRequests: false
-    pullRequestsFromForks: false
-    addCheck: false
-    addComment: false
-    addBadge: false
-    addLabel: false
+    visibility: public

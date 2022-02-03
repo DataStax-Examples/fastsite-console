@@ -1,28 +1,21 @@
-const { createClient } = require("@astrajs/collections")
+const { getAstraClient } = require("./utils/astraClient");
 
 exports.handler = async function (event, context, callback) {
-
+  const astraClient = await getAstraClient();
   const access_token = process.env.FUNCTIONS_ACCESS_TOKEN;
 
   const token = event.headers["x-access-token"];
 
-  if(token != access_token){
+  if (token !== access_token) {
     return {
       statusCode: 401,
       body: "Unauthorized",
-    }
+    };
   }
 
-  const astraClient = await createClient({
-    astraDatabaseId: process.env.ASTRA_DB_ID,
-    astraDatabaseRegion: process.env.ASTRA_DB_REGION,
-    username: process.env.ASTRA_DB_USERNAME,
-    password: process.env.ASTRA_DB_PASSWORD,
-  });
+  let collection = "sag_sites";
 
-  let collection = "sites";
-  
-  if(event.queryStringParameters.site){
+  if (event.queryStringParameters.site) {
     collection = event.queryStringParameters.site;
   }
 
@@ -31,7 +24,7 @@ exports.handler = async function (event, context, callback) {
     .collection(collection);
 
   try {
-    const user = await users.create(JSON.parse(event.body).id, event.body)
+    const user = await users.create(JSON.parse(event.body).id, event.body);
     return {
       statusCode: 200,
       body: JSON.stringify(user),
@@ -41,6 +34,6 @@ exports.handler = async function (event, context, callback) {
     return {
       statusCode: 500,
       body: JSON.stringify(e),
-    }
+    };
   }
-}
+};
